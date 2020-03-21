@@ -1,7 +1,7 @@
 package iteration1
 
 import Ordering.{Boolean => BooleanO, Int => IntO, String => StringO}
-import SortOrder.OrderSyntax
+import syntax._
 
 case class CatSortOrder(idOrder: SortOrder,
                         nameOrder: SortOrder,
@@ -9,7 +9,7 @@ case class CatSortOrder(idOrder: SortOrder,
 
   def toOrdering: Ordering[Cat] = {
     Ordering
-      .Tuple3(idOrder(IntO), nameOrder(StringO), availableOrder(BooleanO))
+      .Tuple3(idOrder.apply(IntO), nameOrder.apply(StringO), availableOrder.apply(BooleanO))
       .on[Cat](cat => (cat.age, cat.name, cat.available))
   }
 }
