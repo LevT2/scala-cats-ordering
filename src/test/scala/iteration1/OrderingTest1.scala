@@ -7,7 +7,7 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 class OrderingTest1 extends FlatSpec with Matchers with ScalaCheckDrivenPropertyChecks {
 
   override implicit val generatorDrivenConfig: PropertyCheckConfiguration =
-    PropertyCheckConfiguration(minSuccessful = 1000, minSize = 50, sizeRange = 100)
+    PropertyCheckConfiguration(minSuccessful = 1000, minSize = 50, sizeRange = 20)
 
   implicit val catGen: Gen[Cat] = for {
     age <- Gen.chooseNum(Int.MinValue, Int.MaxValue)
@@ -23,7 +23,7 @@ class OrderingTest1 extends FlatSpec with Matchers with ScalaCheckDrivenProperty
 
 
   "Ascending sort order on all fields" should "be identical to natural ordering" in {
-    val providedOrdering: Ordering[Cat] = CatSortOrder(SortOrder.Asc, SortOrder.Asc, SortOrder.Asc).toOrdering
+    val providedOrdering: Ordering[Cat] = CatOrdering.of(SortOrder.Asc, SortOrder.Asc, SortOrder.Asc)
 
     forAll(Gen.listOf(catGen)) { cats =>
       cats.sorted(providedOrdering) should equal (cats.sorted(naturalOrdering))
@@ -31,7 +31,7 @@ class OrderingTest1 extends FlatSpec with Matchers with ScalaCheckDrivenProperty
   }
 
   "Descending sort order on all fields" should "be identical to reversed natural ordering" in {
-    val providedOrdering: Ordering[Cat] = CatSortOrder(SortOrder.Desc, SortOrder.Desc, SortOrder.Desc).toOrdering
+    val providedOrdering: Ordering[Cat] = CatOrdering.of(SortOrder.Desc, SortOrder.Desc, SortOrder.Desc)
 
     forAll(Gen.listOf(catGen)) { cats =>
       cats.sorted(providedOrdering) should equal (cats.sorted(naturalOrdering.reverse))
@@ -39,7 +39,7 @@ class OrderingTest1 extends FlatSpec with Matchers with ScalaCheckDrivenProperty
   }
 
   "Any sort order on all fields" should "not change the order of elements" in {
-    val providedOrdering: Ordering[Cat] = CatSortOrder(SortOrder.Any, SortOrder.Any, SortOrder.Any).toOrdering
+    val providedOrdering: Ordering[Cat] = CatOrdering.of(SortOrder.Keep, SortOrder.Keep, SortOrder.Keep)
 
     forAll(Gen.listOf(catGen)) { cats =>
       cats.sorted(providedOrdering) should equal (cats)
@@ -47,7 +47,7 @@ class OrderingTest1 extends FlatSpec with Matchers with ScalaCheckDrivenProperty
   }
 
   "Ascending sort order only by the \"name\" field" should "be the same as natural ordering by that field" in {
-    val providedOrdering: Ordering[Cat] = CatSortOrder(SortOrder.Any, SortOrder.Asc, SortOrder.Any).toOrdering
+    val providedOrdering: Ordering[Cat] = CatOrdering.of(SortOrder.Keep, SortOrder.Asc, SortOrder.Keep)
 
     val fieldOrdering: Ordering[Cat] = Ordering.by(_.name)
 
@@ -57,7 +57,7 @@ class OrderingTest1 extends FlatSpec with Matchers with ScalaCheckDrivenProperty
   }
 
   "Descending sort order only by the \"name\" field" should "be the same as reversed natural ordering by that field" in {
-    val providedOrdering: Ordering[Cat] = CatSortOrder(SortOrder.Any, SortOrder.Desc, SortOrder.Any).toOrdering
+    val providedOrdering: Ordering[Cat] = CatOrdering.of(SortOrder.Keep, SortOrder.Desc, SortOrder.Keep)
 
     val fieldOrdering: Ordering[Cat] = Ordering.by[Cat, String](_.name).reverse
 
