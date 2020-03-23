@@ -8,7 +8,7 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 class OrderingTest2 extends FlatSpec with Matchers with ScalaCheckDrivenPropertyChecks  {
 
   override implicit val generatorDrivenConfig: PropertyCheckConfiguration =
-    PropertyCheckConfiguration(minSuccessful = 2000, minSize = 100, sizeRange = 50)
+    PropertyCheckConfiguration(minSuccessful = 2000, minSize = 50, sizeRange = 20)
 
   implicit val catGen: Gen[Cat] = for {
     age <- Gen.chooseNum(Int.MinValue, Int.MaxValue)
@@ -24,16 +24,16 @@ class OrderingTest2 extends FlatSpec with Matchers with ScalaCheckDrivenProperty
     (c1.age == c2.age) && (c1.name == c2.name) && (c1.available == c2.available) && Ordering[Option[String]].lt(c1.owner, c2.owner)
   )
 
-  "Ascending sort order (nulls first) on all fields" should "be identical to natural ordering" in {
-    val providedOrdering: Ordering[Cat] = CatSortOrder(SortOrder.Asc.nullsFirst, SortOrder.Asc.nullsFirst, SortOrder.Asc.nullsFirst, SortOrder.Asc.nullsFirst).toOrdering
+  "Ascending sort order (empty first) on all fields" should "be identical to natural ordering" in {
+    val providedOrdering: Ordering[Cat] = CatSortOrder(SortOrder.Asc.emptyFirst, SortOrder.Asc.emptyFirst, SortOrder.Asc.emptyFirst, SortOrder.Asc.emptyFirst).toOrdering
 
     forAll(Gen.listOf(catGen)) { cats =>
       cats.sorted(providedOrdering) should equal (cats.sorted(naturalOrdering))
     }
   }
 
-  "Descending sort order (nulls last) on all fields" should "be identical to reversed natural ordering" in {
-    val providedOrdering: Ordering[Cat] = CatSortOrder(SortOrder.Desc.nullsLast, SortOrder.Desc.nullsLast, SortOrder.Desc.nullsLast, SortOrder.Desc.nullsLast).toOrdering
+  "Descending sort order (empty last) on all fields" should "be identical to reversed natural ordering" in {
+    val providedOrdering: Ordering[Cat] = CatSortOrder(SortOrder.Desc.emptyLast, SortOrder.Desc.emptyLast, SortOrder.Desc.emptyLast, SortOrder.Desc.emptyLast).toOrdering
 
     forAll(Gen.listOf(catGen)) { cats =>
       cats.sorted(providedOrdering) should equal (cats.sorted(naturalOrdering.reverse))
@@ -49,7 +49,7 @@ class OrderingTest2 extends FlatSpec with Matchers with ScalaCheckDrivenProperty
   }
 
   "Ascending sort order only by the \"name\" field" should "be the same as natural ordering by that field" in {
-    val providedOrdering: Ordering[Cat] = CatSortOrder(SortOrder.Any, SortOrder.Asc.nullsFirst, SortOrder.Any, SortOrder.Any).toOrdering
+    val providedOrdering: Ordering[Cat] = CatSortOrder(SortOrder.Any, SortOrder.Asc.emptyFirst, SortOrder.Any, SortOrder.Any).toOrdering
 
     val fieldOrdering: Ordering[Cat] = Ordering.by(_.name)
 
@@ -59,7 +59,7 @@ class OrderingTest2 extends FlatSpec with Matchers with ScalaCheckDrivenProperty
   }
 
   "Descending sort order only by the \"name\" field" should "be the same as reversed natural ordering by that field" in {
-    val providedOrdering: Ordering[Cat] = CatSortOrder(SortOrder.Any, SortOrder.Desc.nullsFirst, SortOrder.Any, SortOrder.Any).toOrdering
+    val providedOrdering: Ordering[Cat] = CatSortOrder(SortOrder.Any, SortOrder.Desc.emptyFirst, SortOrder.Any, SortOrder.Any).toOrdering
 
     val fieldOrdering: Ordering[Cat] = Ordering.by[Cat, String](_.name).reverse
 
@@ -68,8 +68,8 @@ class OrderingTest2 extends FlatSpec with Matchers with ScalaCheckDrivenProperty
     }
   }
 
-  "Ascending sort order (nulls first) only by the \"owner\" field" should "be the same as natural ordering by that field" in {
-    val providedOrdering: Ordering[Cat] = CatSortOrder(SortOrder.Any, SortOrder.Any, SortOrder.Any, SortOrder.Asc.nullsFirst).toOrdering
+  "Ascending sort order (empty first) only by the \"owner\" field" should "be the same as natural ordering by that field" in {
+    val providedOrdering: Ordering[Cat] = CatSortOrder(SortOrder.Any, SortOrder.Any, SortOrder.Any, SortOrder.Asc.emptyFirst).toOrdering
 
     val fieldOrdering: Ordering[Cat] = Ordering.by(_.owner)
 
@@ -78,8 +78,8 @@ class OrderingTest2 extends FlatSpec with Matchers with ScalaCheckDrivenProperty
     }
   }
 
-  "Descending sort order (nulls last) only by the \"owner\" field" should "be the same as reversed natural ordering by that field" in {
-    val providedOrdering: Ordering[Cat] = CatSortOrder(SortOrder.Any, SortOrder.Any, SortOrder.Any, SortOrder.Desc.nullsLast).toOrdering
+  "Descending sort order (empty last) only by the \"owner\" field" should "be the same as reversed natural ordering by that field" in {
+    val providedOrdering: Ordering[Cat] = CatSortOrder(SortOrder.Any, SortOrder.Any, SortOrder.Any, SortOrder.Desc.emptyLast).toOrdering
 
     val fieldOrdering: Ordering[Cat] = Ordering.by[Cat, Option[String]](_.owner).reverse
 

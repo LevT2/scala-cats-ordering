@@ -7,13 +7,13 @@ object syntax {
   private object OptionOrdering {
 
     def apply[A](rootOrdering: Ordering[A],
-                 nullsFirst: Boolean): Ordering[Option[A]] =
-      if (nullsFirst)
-        OptionOrdering.nullsFirst(rootOrdering)
+                 emptyFirst: Boolean): Ordering[Option[A]] =
+      if (emptyFirst)
+        OptionOrdering.emptyFirst(rootOrdering)
       else
-        OptionOrdering.nullsLast(rootOrdering)
+        OptionOrdering.emptyLast(rootOrdering)
 
-    def nullsFirst[A](rootOrdering: Ordering[A]): Ordering[Option[A]] =
+    def emptyFirst[A](rootOrdering: Ordering[A]): Ordering[Option[A]] =
       (x: Option[A], y: Option[A]) => (x, y) match {
         case (None, None) => 0
         case (None, _) => -1
@@ -21,7 +21,7 @@ object syntax {
         case (Some(a), Some(b)) => rootOrdering.compare(a, b)
       }
 
-    def nullsLast[A](rootOrdering: Ordering[A]): Ordering[Option[A]] =
+    def emptyLast[A](rootOrdering: Ordering[A]): Ordering[Option[A]] =
       (x: Option[A], y: Option[A]) => (x, y) match {
         case (None, None) => 0
         case (None, _) => 1
@@ -36,8 +36,8 @@ object syntax {
 
     def optional[A](ordering: Ordering[A]): Ordering[Option[A]] =
       order match {
-        case Asc(nullsFirst) => OptionOrdering(ordering, nullsFirst)
-        case Desc(nullsFirst) => OptionOrdering(ordering.reverse, nullsFirst)
+        case Asc(emptyFirst) => OptionOrdering(ordering, emptyFirst)
+        case Desc(emptyFirst) => OptionOrdering(ordering.reverse, emptyFirst)
       }
 
     def apply[A](ordering: Ordering[A]): Ordering[A] =

@@ -7,18 +7,18 @@ object SortOrder {
   case object Any extends SortOrder
 
   object Asc {
-    def nullsFirst: Asc = Asc(nullsFirst = true)
-    def nullsLast: Asc = Asc(nullsFirst = false)
+    def emptyFirst: Asc = Asc(emptyFirst = true)
+    def emptyLast: Asc = Asc(emptyFirst = false)
   }
 
-  case class Asc(nullsFirst: Boolean) extends SortOrder
+  case class Asc(emptyFirst: Boolean) extends SortOrder
 
   object Desc {
-    def nullsFirst: Desc = Desc(nullsFirst = true)
-    def nullsLast: Desc = Desc(nullsFirst = false)
+    def emptyFirst: Desc = Desc(emptyFirst = true)
+    def emptyLast: Desc = Desc(emptyFirst = false)
   }
 
-  case class Desc(nullsFirst: Boolean) extends SortOrder
+  case class Desc(emptyFirst: Boolean) extends SortOrder
 }
 
 
