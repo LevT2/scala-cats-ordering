@@ -38,7 +38,7 @@ class OrderingTest1 extends FlatSpec with Matchers with ScalaCheckDrivenProperty
     }
   }
 
-  "Any sort order on all fields" should "not change the order of elements" in {
+  "Keeping sort order on all fields" should "not change the order of elements" in {
     val providedOrdering: Ordering[Cat] = CatOrdering.of(SortOrder.Keep, SortOrder.Keep, SortOrder.Keep)
 
     forAll(Gen.listOf(catGen)) { cats =>

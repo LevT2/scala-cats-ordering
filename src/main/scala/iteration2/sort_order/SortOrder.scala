@@ -4,7 +4,7 @@ sealed trait SortOrder
 
 object SortOrder {
 
-  case object Any extends SortOrder
+  case object Keep extends SortOrder
 
   object Asc {
     def emptyFirst: Asc = Asc(emptyFirst = true)
@@ -20,6 +20,3 @@ object SortOrder {
 
   case class Desc(emptyFirst: Boolean) extends SortOrder
 }
-
-
-

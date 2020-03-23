@@ -30,8 +30,6 @@ object syntax {
       }
   }
 
-  // Note this decision is intentional since if we apply order to ordering, we may forget it and there won't
-  // be a compile error
   implicit class OrderSyntax(val order: SortOrder) extends AnyVal {
 
     def optional[A](ordering: Ordering[A]): Ordering[Option[A]] =
@@ -42,8 +40,8 @@ object syntax {
 
     def apply[A](ordering: Ordering[A]): Ordering[A] =
       order match {
-        case Asc(_) => ordering
-        case Desc(_) => ordering.reverse
+        case _: Asc => ordering
+        case _: Desc => ordering.reverse
       }
   }
 }
