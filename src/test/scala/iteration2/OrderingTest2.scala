@@ -87,4 +87,34 @@ class OrderingTest2 extends FlatSpec with Matchers with ScalaCheckDrivenProperty
       cats.sorted(providedOrdering) should equal (cats.sorted(fieldOrdering))
     }
   }
+
+  "Ascending sort order (empty last) only by the \"owner\" field" should "be correct" in {
+    val providedOrdering: Ordering[Cat] = CatSortOrder(SortOrder.Any, SortOrder.Any, SortOrder.Any, SortOrder.Asc.emptyLast).toOrdering
+
+    val fieldOrdering: Ordering[Cat] = Ordering.fromLessThan[Option[String]] {
+      case (None, None) => false
+      case (None, _) => false
+      case (_, None) => true
+      case (Some(x), Some(y)) => x < y
+    }.on(_.owner)
+
+    forAll(Gen.listOf(catGen)) { cats =>
+      cats.sorted(providedOrdering) should equal (cats.sorted(fieldOrdering))
+    }
+  }
+
+  "Descending sort order (empty first) only by the \"owner\" field" should "be correct" in {
+    val providedOrdering: Ordering[Cat] = CatSortOrder(SortOrder.Any, SortOrder.Any, SortOrder.Any, SortOrder.Desc.emptyFirst).toOrdering
+
+    val fieldOrdering: Ordering[Cat] = Ordering.fromLessThan[Option[String]] {
+      case (None, None) => false
+      case (None, _) => true
+      case (_, None) => false
+      case (Some(x), Some(y)) => x > y
+    }.on(_.owner)
+
+    forAll(Gen.listOf(catGen)) { cats =>
+      cats.sorted(providedOrdering) should equal (cats.sorted(fieldOrdering))
+    }
+  }
 }
