@@ -3,7 +3,7 @@ package iteration2
 import iteration2.sort_order.SortOrder
 import iteration2.sort_order.syntax._
 
-import Ordering.{Boolean => BooleanO, Int => IntO, String => StringO}
+import scala.Ordering.{Boolean => BooleanO, Int => IntO, String => StringO}
 
 object CatOrdering {
 

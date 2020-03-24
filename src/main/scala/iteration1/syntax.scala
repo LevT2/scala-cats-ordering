@@ -1,7 +1,7 @@
 package iteration1
 
 import common.OrderingUtil
-import iteration1.SortOrder.{Keep, Asc, Desc}
+import iteration1.SortOrder.{Asc, Desc, Keep}
 
 object syntax {
 

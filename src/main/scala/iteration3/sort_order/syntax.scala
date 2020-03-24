@@ -1,6 +1,6 @@
 package iteration3.sort_order
 
-import SortOrder._
+import iteration3.sort_order.SortOrder._
 
 object syntax {
 
