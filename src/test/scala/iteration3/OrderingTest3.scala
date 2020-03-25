@@ -38,19 +38,19 @@ class OrderingTest3 extends FlatSpec with Matchers with ScalaCheckDrivenProperty
       .orElseBy(_.urgentSell)
 
   "Ascending sort order (empty first) on all fields" should "be identical to natural ordering" in {
-    val fieldMap: Map[CatSortField, SortOrder] = Map(
-      CatSortField.Age ->             SortOrder.Asc.emptyFirst,
-      CatSortField.Name ->            SortOrder.Asc.emptyFirst,
-      CatSortField.Available ->       SortOrder.Asc.emptyFirst,
-      CatSortField.Owner ->           SortOrder.Asc.emptyFirst,
-      CatSortField.Breed ->           SortOrder.Asc.emptyFirst,
-      CatSortField.FurColor ->        SortOrder.Asc.emptyFirst,
-      CatSortField.EyeColor ->        SortOrder.Asc.emptyFirst,
-      CatSortField.RegistrationId ->  SortOrder.Asc.emptyFirst,
-      CatSortField.LastHealthCheck -> SortOrder.Asc.emptyFirst,
-      CatSortField.UrgentSell ->      SortOrder.Asc.emptyFirst
+    val fieldMap: List[(CatField, SortOrder)] = List(
+      CatField.Age ->             SortOrder.Asc.emptyFirst,
+      CatField.Name ->            SortOrder.Asc.emptyFirst,
+      CatField.Available ->       SortOrder.Asc.emptyFirst,
+      CatField.Owner ->           SortOrder.Asc.emptyFirst,
+      CatField.Breed ->           SortOrder.Asc.emptyFirst,
+      CatField.FurColor ->        SortOrder.Asc.emptyFirst,
+      CatField.EyeColor ->        SortOrder.Asc.emptyFirst,
+      CatField.RegistrationId ->  SortOrder.Asc.emptyFirst,
+      CatField.LastHealthCheck -> SortOrder.Asc.emptyFirst,
+      CatField.UrgentSell ->      SortOrder.Asc.emptyFirst
     )
-    val providedOrdering: Ordering[Cat] = CatSortField.toDefaultOrdering(fieldMap)
+    val providedOrdering: Ordering[Cat] = CatOrdering.byFields(fieldMap)
 
     forAll(Gen.listOf(catGen)) { cats =>
       cats.sorted(providedOrdering) should equal (cats.sorted(naturalOrdering))
@@ -58,19 +58,19 @@ class OrderingTest3 extends FlatSpec with Matchers with ScalaCheckDrivenProperty
   }
 
   "Descending sort order (empty last) on all fields" should "be identical to reversed natural ordering" in {
-    val fieldMap: Map[CatSortField, SortOrder] = Map(
-      CatSortField.Age ->             SortOrder.Desc.emptyLast,
-      CatSortField.Name ->            SortOrder.Desc.emptyLast,
-      CatSortField.Available ->       SortOrder.Desc.emptyLast,
-      CatSortField.Owner ->           SortOrder.Desc.emptyLast,
-      CatSortField.Breed ->           SortOrder.Desc.emptyLast,
-      CatSortField.FurColor ->        SortOrder.Desc.emptyLast,
-      CatSortField.EyeColor ->        SortOrder.Desc.emptyLast,
-      CatSortField.RegistrationId ->  SortOrder.Desc.emptyLast,
-      CatSortField.LastHealthCheck -> SortOrder.Desc.emptyLast,
-      CatSortField.UrgentSell ->      SortOrder.Desc.emptyLast
+    val fieldMap: List[(CatField, SortOrder)] = List(
+      CatField.Age ->             SortOrder.Desc.emptyLast,
+      CatField.Name ->            SortOrder.Desc.emptyLast,
+      CatField.Available ->       SortOrder.Desc.emptyLast,
+      CatField.Owner ->           SortOrder.Desc.emptyLast,
+      CatField.Breed ->           SortOrder.Desc.emptyLast,
+      CatField.FurColor ->        SortOrder.Desc.emptyLast,
+      CatField.EyeColor ->        SortOrder.Desc.emptyLast,
+      CatField.RegistrationId ->  SortOrder.Desc.emptyLast,
+      CatField.LastHealthCheck -> SortOrder.Desc.emptyLast,
+      CatField.UrgentSell ->      SortOrder.Desc.emptyLast
     )
-    val providedOrdering: Ordering[Cat] = CatSortField.toDefaultOrdering(fieldMap)
+    val providedOrdering: Ordering[Cat] = CatOrdering.byFields(fieldMap)
 
     forAll(Gen.listOf(catGen)) { cats =>
       cats.sorted(providedOrdering) should equal (cats.sorted(naturalOrdering.reverse))
@@ -78,8 +78,8 @@ class OrderingTest3 extends FlatSpec with Matchers with ScalaCheckDrivenProperty
   }
 
   "No sort order on all fields" should "not change the order of elements" in {
-    val fieldMap: Map[CatSortField, SortOrder] = Map.empty
-    val providedOrdering: Ordering[Cat] = CatSortField.toDefaultOrdering(fieldMap)
+    val fieldMap: List[(CatField, SortOrder)] = List.empty
+    val providedOrdering: Ordering[Cat] = CatOrdering.byFields(fieldMap)
 
     forAll(Gen.listOf(catGen)) { cats =>
       cats.sorted(providedOrdering) should equal (cats)
@@ -87,10 +87,10 @@ class OrderingTest3 extends FlatSpec with Matchers with ScalaCheckDrivenProperty
   }
 
   "Ascending sort order only by the \"name\" field" should "be the same as natural ordering by that field" in {
-    val fieldMap: Map[CatSortField, SortOrder] = Map(
-      CatSortField.Name -> SortOrder.Asc.emptyFirst,
+    val fieldMap: List[(CatField, SortOrder)] = List(
+      CatField.Name -> SortOrder.Asc.emptyFirst,
     )
-    val providedOrdering: Ordering[Cat] = CatSortField.toDefaultOrdering(fieldMap)
+    val providedOrdering: Ordering[Cat] = CatOrdering.byFields(fieldMap)
 
     val fieldOrdering: Ordering[Cat] = Ordering.by(_.name)
 
@@ -100,10 +100,10 @@ class OrderingTest3 extends FlatSpec with Matchers with ScalaCheckDrivenProperty
   }
 
   "Descending sort order only by the \"name\" field" should "be the same as reversed natural ordering by that field" in {
-    val fieldMap: Map[CatSortField, SortOrder] = Map(
-      CatSortField.Name -> SortOrder.Desc.emptyFirst,
+    val fieldMap: List[(CatField, SortOrder)] = List(
+      CatField.Name -> SortOrder.Desc.emptyFirst,
     )
-    val providedOrdering: Ordering[Cat] = CatSortField.toDefaultOrdering(fieldMap)
+    val providedOrdering: Ordering[Cat] = CatOrdering.byFields(fieldMap)
 
     val fieldOrdering: Ordering[Cat] = Ordering.by[Cat, String](_.name).reverse
 
@@ -113,10 +113,10 @@ class OrderingTest3 extends FlatSpec with Matchers with ScalaCheckDrivenProperty
   }
 
   "Ascending sort order (empty first) only by the \"owner\" field" should "be the same as natural ordering by that field" in {
-    val fieldMap: Map[CatSortField, SortOrder] = Map(
-      CatSortField.Owner -> SortOrder.Asc.emptyFirst,
+    val fieldMap: List[(CatField, SortOrder)] = List(
+      CatField.Owner -> SortOrder.Asc.emptyFirst,
     )
-    val providedOrdering: Ordering[Cat] = CatSortField.toDefaultOrdering(fieldMap)
+    val providedOrdering: Ordering[Cat] = CatOrdering.byFields(fieldMap)
 
     val fieldOrdering: Ordering[Cat] = Ordering.by(_.owner)
 
@@ -126,10 +126,10 @@ class OrderingTest3 extends FlatSpec with Matchers with ScalaCheckDrivenProperty
   }
 
   "Descending sort order (empty last) only by the \"owner\" field" should "be the same as reversed natural ordering by that field" in {
-    val fieldMap: Map[CatSortField, SortOrder] = Map(
-      CatSortField.Owner -> SortOrder.Desc.emptyLast,
+    val fieldMap: List[(CatField, SortOrder)] = List(
+      CatField.Owner -> SortOrder.Desc.emptyLast,
     )
-    val providedOrdering: Ordering[Cat] = CatSortField.toDefaultOrdering(fieldMap)
+    val providedOrdering: Ordering[Cat] = CatOrdering.byFields(fieldMap)
 
     val fieldOrdering: Ordering[Cat] = Ordering.by[Cat, Option[String]](_.owner).reverse
 
@@ -139,10 +139,10 @@ class OrderingTest3 extends FlatSpec with Matchers with ScalaCheckDrivenProperty
   }
 
   "Ascending sort order (empty last) only by the \"owner\" field" should "be correct" in {
-    val fieldMap: Map[CatSortField, SortOrder] = Map(
-      CatSortField.Owner -> SortOrder.Asc.emptyLast,
+    val fieldMap: List[(CatField, SortOrder)] = List(
+      CatField.Owner -> SortOrder.Asc.emptyLast,
     )
-    val providedOrdering: Ordering[Cat] = CatSortField.toDefaultOrdering(fieldMap)
+    val providedOrdering: Ordering[Cat] = CatOrdering.byFields(fieldMap)
     val fieldOrdering: Ordering[Cat] = Ordering.fromLessThan[Option[String]] {
       case (None, None) => false
       case (None, _) => false
@@ -156,10 +156,10 @@ class OrderingTest3 extends FlatSpec with Matchers with ScalaCheckDrivenProperty
   }
 
   "Descending sort order (empty first) only by the \"owner\" field" should "be correct" in {
-    val fieldMap: Map[CatSortField, SortOrder] = Map(
-      CatSortField.Owner -> SortOrder.Desc.emptyFirst,
+    val fieldMap: List[(CatField, SortOrder)] = List(
+      CatField.Owner -> SortOrder.Desc.emptyFirst,
     )
-    val providedOrdering: Ordering[Cat] = CatSortField.toDefaultOrdering(fieldMap)
+    val providedOrdering: Ordering[Cat] = CatOrdering.byFields(fieldMap)
 
     val fieldOrdering: Ordering[Cat] = Ordering.fromLessThan[Option[String]] {
       case (None, None) => false
@@ -174,12 +174,12 @@ class OrderingTest3 extends FlatSpec with Matchers with ScalaCheckDrivenProperty
   }
 
   "Customized sort order" should "be correct" in {
-    val fieldMap: Seq[(CatSortField, SortOrder)] = Seq(
-      CatSortField.Owner -> SortOrder.Desc.emptyLast,
-      CatSortField.Name -> SortOrder.Asc.emptyFirst,
-      CatSortField.Available -> SortOrder.Asc.emptyFirst
+    val fieldMap: Seq[(CatField, SortOrder)] = Seq(
+      CatField.Owner -> SortOrder.Desc.emptyLast,
+      CatField.Name -> SortOrder.Asc.emptyFirst,
+      CatField.Available -> SortOrder.Asc.emptyFirst
     )
-    val providedOrdering: Ordering[Cat] = CatSortField.toCustomizedOrdering(fieldMap)
+    val providedOrdering: Ordering[Cat] = CatOrdering.byFields(fieldMap)
 
     val fieldOrdering: Ordering[Cat] = Ordering.by[Cat, Option[String]](_.owner).reverse
       .orElseBy(_.name)
