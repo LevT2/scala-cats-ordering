@@ -24,10 +24,15 @@ object CatSortField {
   def toCustomizedOrdering(fields: Iterable[(CatSortField, SortOrder)]): Ordering[Cat] =
     if (fields.isEmpty) OrderingUtil.identity[Cat]
     else {
-      val (headField, headOrder) = fields.head
-      fields.tail.foldLeft(headField.toOrdering(headOrder)) {
-        case (ordering, (field, order)) => ordering.orElse(field.toOrdering(order))
+      val (head, headOrder) = fields.head
+      val (res, _) = fields.tail.foldLeft[(Ordering[Cat], Set[CatSortField])]((head.toOrdering(headOrder), Set())) {
+        case (acc@(_, presentFields), (field, _)) if presentFields.contains(field) =>
+          acc
+
+        case ((ordering, presentFields), (field, order)) =>
+          (ordering.orElse(field.toOrdering(order)), presentFields + field)
       }
+      res
     }
 
   case object Age extends CatSortField(1) {
