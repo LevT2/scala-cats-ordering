@@ -5,7 +5,7 @@ import iteration3.sort_order.SortOrder
 
 object CatOrdering {
 
-  def byFields(fields: Iterable[(CatField, SortOrder)]): Ordering[Cat] =
+  def byFields(fields: Seq[(CatField, SortOrder)]): Ordering[Cat] =
     if (fields.isEmpty) OrderingUtil.identity[Cat]
     else {
       val (head, headOrder) = fields.head
