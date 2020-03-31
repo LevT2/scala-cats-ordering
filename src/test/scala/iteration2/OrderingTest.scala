@@ -5,7 +5,7 @@ import org.scalacheck.Gen
 import org.scalatest.{FlatSpec, Matchers}
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 
-class OrderingTest2 extends FlatSpec with Matchers with ScalaCheckDrivenPropertyChecks {
+class OrderingTest extends FlatSpec with Matchers with ScalaCheckDrivenPropertyChecks {
 
   override implicit val generatorDrivenConfig: PropertyCheckConfiguration =
     PropertyCheckConfiguration(minSuccessful = 2000, minSize = 50, sizeRange = 20)
